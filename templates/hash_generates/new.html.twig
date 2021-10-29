@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New HashGenerates{% endblock %}
+
+{% block body %}
+    <h1>Create new HashGenerates</h1>
+
+    {{ include('hash_generates/_form.html.twig') }}
+
+    <a href="{{ path('hash_generates_index') }}">back to list</a>
+{% endblock %}

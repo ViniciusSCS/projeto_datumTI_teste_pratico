@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}HashGenerates{% endblock %}
+
+{% block body %}
+    <h1>HashGenerates</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ hash_generate.id }}</td>
+            </tr>
+            <tr>
+                <th>String_entrada</th>
+                <td>{{ hash_generate.stringEntrada }}</td>
+            </tr>
+            <tr>
+                <th>Chave_encontrada</th>
+                <td>{{ hash_generate.chaveEncontrada }}</td>
+            </tr>
+            <tr>
+                <th>Hash_gerado</th>
+                <td>{{ hash_generate.hashGerado }}</td>
+            </tr>
+            <tr>
+                <th>Tentativas</th>
+                <td>{{ hash_generate.tentativas }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('hash_generates_index') }}">back to list</a>
+
+    <a href="{{ path('hash_generates_edit', {'id': hash_generate.id}) }}">edit</a>
+
+    {{ include('hash_generates/_delete_form.html.twig') }}
+{% endblock %}

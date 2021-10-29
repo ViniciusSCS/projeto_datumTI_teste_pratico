@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}HashGenerates index{% endblock %}
+
+{% block body %}
+    <h1>HashGenerates index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>String_entrada</th>
+                <th>Chave_encontrada</th>
+                <th>Hash_gerado</th>
+                <th>Tentativas</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for hash_generate in hash_generates %}
+            <tr>
+                <td>{{ hash_generate.id }}</td>
+                <td>{{ hash_generate.stringEntrada }}</td>
+                <td>{{ hash_generate.chaveEncontrada }}</td>
+                <td>{{ hash_generate.hashGerado }}</td>
+                <td>{{ hash_generate.tentativas }}</td>
+                <td>
+                    <a href="{{ path('hash_generates_show', {'id': hash_generate.id}) }}">show</a>
+                    <a href="{{ path('hash_generates_edit', {'id': hash_generate.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('hash_generates_new') }}">Create new</a>
+{% endblock %}

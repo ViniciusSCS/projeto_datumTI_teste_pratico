@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edit HashGenerates{% endblock %}
+
+{% block body %}
+    <h1>Edit HashGenerates</h1>
+
+    {{ include('hash_generates/_form.html.twig', {'button_label': 'Update'}) }}
+
+    <a href="{{ path('hash_generates_index') }}">back to list</a>
+
+    {{ include('hash_generates/_delete_form.html.twig') }}
+{% endblock %}
