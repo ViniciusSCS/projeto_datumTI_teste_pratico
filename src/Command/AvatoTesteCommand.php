@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Entity\HashGenerates;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -11,32 +12,40 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AvatoTesteCommand extends Command
 {
-    protected static $defaultName = 'avato:test';
+    protected static $defaultName = 'avato:test ';
     protected static $defaultDescription = 'Comando para testar aplicação';
 
     protected function configure(): void
     {
         $this
-            ->addArgument('arg1', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('option1', null, InputOption::VALUE_NONE, 'Option description')
+            ->addArgument('string_entrada', InputArgument::OPTIONAL, 'Argument description')
+            ->addOption('request', null, InputOption::VALUE_OPTIONAL, 'Option description')
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $arg1 = $input->getArgument('arg1');
+        $string_entrada = $input->getArgument('string_entrada');
+        $qtd_request = $input->getOption('request');
 
-        if ($arg1) {
-            $io->note(sprintf('You passed an argument: %s', $arg1));
+        for($i = 1; $i <= $qtd_request; $i++){
+//            $io->success($haseGenerate);
+//            return Command::SUCCESS;
+            $hg = new HashGenerates();
+            $hashGenerate = $hg->setStringEntrada($string_entrada);
+            $io->writeln($hashGenerate);
+            return Command::SUCCESS;
+//            $aux = new HashGenerateController();
+
+//            $aux->encontra_zeros($hg, 1);
+//            $hashGenerate = $hg->getChaveEncontrada();
+
         }
-
-        if ($input->getOption('option1')) {
-            // ...
-        }
-
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
-
         return Command::SUCCESS;
+//            $io->success($haseGenerate);
+//            return Command::SUCCESS;
+
+
     }
 }

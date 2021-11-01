@@ -37,16 +37,9 @@ class HashGeneratesController extends AbstractController
 
         $hg = new HashGenerates();
 
-        $data['chave_encontrada'] = $this->random_string();
-        $hash = $data['string_entrada'] . $data['chave_encontrada'];
         $hg->setStringEntrada($data['string_entrada']);
-        $hg->setChaveEncontrada($data['chave_encontrada']);
-        $hg->setHashGerado(md5($hash));
-        $hg->setTentativas(20000);
 
-        $entityManager = $this->getDoctrine()->getManager();
-        $entityManager->persist($hg);
-        $entityManager->flush();
+        $this->encontra_zeros($hg, 1);
 
         return new JsonResponse($hg);
     }
@@ -64,15 +57,16 @@ class HashGeneratesController extends AbstractController
 
     public function encontra_zeros($hg, $count)
     {
-        $hg = $this->random_string();
-        $hash = $data['string_entrada'] . $this->random_string();
-        $hg->hash_gerado = md5($hash);
+        $data['chave_encontrada'] = $this->random_string();
+        $hash = $data['string_entrada'] . $data['chave_encontrada'];
+        $hg->setHashGerado(md5($hash));
 
         $confere_zeros = Str::startsWith($hg->hash_gerado, '0000');
-        $var = new UnicodeString();
 
         if ($confere_zeros) {
             $hg->setTentativas($count);
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($hg);
             $entityManager->flush();
         } else {
             $count++;
