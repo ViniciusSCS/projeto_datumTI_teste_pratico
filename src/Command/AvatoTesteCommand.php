@@ -2,8 +2,8 @@
 
 namespace App\Command;
 
+use App\Controller\HashCommandController;
 use App\Controller\HashGeneratesController;
-use App\Entity\HashGenerates;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -13,8 +13,18 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AvatoTesteCommand extends Command
 {
-    protected static $defaultName = 'avato:test ';
+    protected static $defaultName = 'avato:test';
     protected static $defaultDescription = 'Comando para testar aplicação';
+
+    private $hashcommand;
+    private $hashControler;
+
+    public function __construct(HashCommandController $hashcommand, HashGeneratesController $hashControler)
+    {
+        parent::__construct();
+        $this->hashcommand = $hashcommand;
+        $this->hashControler = $hashControler;
+    }
 
     protected function configure(): void
     {
@@ -26,20 +36,20 @@ class AvatoTesteCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $hashGenerate = $input->getArgument('string_entrada');
+        $stringEntrada = $input->getArgument('string_entrada');
         $qtd_request = $input->getOption('requests');
 
+        $this->getHashCommand($stringEntrada, $qtd_request);
 
-        for ($i = 1; $i <= $qtd_request; $i++)
-        {
-            $hg = new HashGenerates();
-            $string_entrada = $hg->setStringEntrada($hashGenerate);
-
-            $controller = new HashGeneratesController();
-            $controller->encontra_zeros($hg, $string_entrada, 1);
-            $hashGenerate = $hg->getChaveEncontrada();
-        }
+        $output->writeln(['SUCCESS']);
         return Command::SUCCESS;
 
     }
+
+    private function getHashCommand(string $stringEntrada, $qtd_request)
+    {
+        $this->hashControler->initHash($stringEntrada, $qtd_request);
+    }
+
+
 }

@@ -1,3 +1,4 @@
 hashGenerate:
-    path: /hash
-    controller: App\Controller\HashGeneratesController::hashGanerate
+    path: /hash/{string_entrada}
+    controller: App\Controller\HashGeneratesController::initHash
+    methods: ['POST']
