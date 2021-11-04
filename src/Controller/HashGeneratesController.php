@@ -2,12 +2,8 @@
 
 namespace App\Controller;
 
-use App\Entity\HashGenerates;
 use App\Service\HashGenerateService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\String\UnicodeString;
 
 
 class HashGeneratesController extends AbstractController
@@ -28,10 +24,9 @@ class HashGeneratesController extends AbstractController
 
     private function generateBaseHash(string $hashGerado, $qtd_request)
     {
-        for($i = 1; $i<= $qtd_request; $i++) {
+        $qtd_request = $qtd_request - 1;
+        for($i = 1; $i <= $qtd_request; $i++) {
             $this->service->hashGanerate($hashGerado);
         }
-
-        return ['Tudo gravado'];
     }
 }

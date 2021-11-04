@@ -10,6 +10,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\HttpFoundation\Request;
 
 class AvatoTesteCommand extends Command
 {
@@ -40,8 +41,8 @@ class AvatoTesteCommand extends Command
         $qtd_request = $input->getOption('requests');
 
         $this->getHashCommand($stringEntrada, $qtd_request);
-
         $output->writeln(['SUCCESS']);
+
         return Command::SUCCESS;
 
     }
