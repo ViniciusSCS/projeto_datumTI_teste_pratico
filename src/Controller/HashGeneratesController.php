@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\HashGenerates;
 use App\Form\HashGeneratesType;
 use App\Repository\HashGenaratesRepository;
+use PHPUnit\Framework\Constraint\StringStartsWith;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Bundle\MakerBundle\Str;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -18,15 +19,6 @@ use Symfony\Component\String\UnicodeString;
  */
 class HashGeneratesController extends AbstractController
 {
-    /**
-     * @Route("/", name="hash_generates_index", methods={"GET"})
-     */
-    public function index(HashGenaratesRepository $hashGenaratesRepository): Response
-    {
-        return $this->render('hash_generates/index.html.twig', [
-            'hash_generates' => $hashGenaratesRepository->findAll(),
-        ]);
-    }
 
     /**
      * @Route("/new", name="hash_generates_new", methods={"GET","POST"})
@@ -36,10 +28,12 @@ class HashGeneratesController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         $hg = new HashGenerates();
+        $string_entrada = $hg->setStringEntrada($data['string_entrada']);
 
-        $hg->setStringEntrada($data['string_entrada']);
+        $this->encontra_zeros($hg, $string_entrada, 1);
 
-        $this->encontra_zeros($hg, 1);
+        $entityManager = $this->getDoctrine()->getManager();
+        $entityManager->persist($hg);
 
         return new JsonResponse($hg);
     }
@@ -55,13 +49,14 @@ class HashGeneratesController extends AbstractController
         return $randomString;
     }
 
-    public function encontra_zeros($hg, $count)
+    public function encontra_zeros(HashGenerates $hg, $string_entrada, $count): Response
     {
-        $data['chave_encontrada'] = $this->random_string();
-        $hash = $data['string_entrada'] . $data['chave_encontrada'];
-        $hg->setHashGerado(md5($hash));
+        $chave_encontrada = $hg->setChaveEncontrada($this->random_string());
+        $hash = $hg->getStringEntrada($string_entrada) . $hg->getChaveEncontrada($chave_encontrada);
+        $hash_gerado = $hg->setHashGerado(md5($hash));
 
-        $confere_zeros = Str::startsWith($hg->hash_gerado, '0000');
+        $text = new UnicodeString($hg->getHashGerado($hash_gerado));
+        $confere_zeros = $text->ignoreCase()->startsWith('0000');
 
         if ($confere_zeros) {
             $hg->setTentativas($count);
@@ -70,52 +65,8 @@ class HashGeneratesController extends AbstractController
             $entityManager->flush();
         } else {
             $count++;
-            $this->encontra_zeros($hg, $count);
+            $this->encontra_zeros($hg, $string_entrada, $count);
         }
-    }
-
-
-    /**
-     * @Route("/{id}", name="hash_generates_show", methods={"GET"})
-     */
-    public function show(HashGenerates $hashGenerate): Response
-    {
-        return $this->render('hash_generates/show.html.twig', [
-            'hash_generate' => $hashGenerate,
-        ]);
-    }
-
-    /**
-     * @Route("/{id}/edit", name="hash_generates_edit", methods={"GET","POST"})
-     */
-    public function edit(Request $request, HashGenerates $hashGenerate): Response
-    {
-        $form = $this->createForm(HashGeneratesType::class, $hashGenerate);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('hash_generates_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->renderForm('hash_generates/edit.html.twig', [
-            'hash_generate' => $hashGenerate,
-            'form' => $form,
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="hash_generates_delete", methods={"POST"})
-     */
-    public function delete(Request $request, HashGenerates $hashGenerate): Response
-    {
-        if ($this->isCsrfTokenValid('delete' . $hashGenerate->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($hashGenerate);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('hash_generates_index', [], Response::HTTP_SEE_OTHER);
+        return new JsonResponse($hg);
     }
 }

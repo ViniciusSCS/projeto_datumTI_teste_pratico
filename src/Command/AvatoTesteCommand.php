@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use App\Controller\HashGeneratesController;
 use App\Entity\HashGenerates;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -19,32 +20,28 @@ class AvatoTesteCommand extends Command
     {
         $this
             ->addArgument('string_entrada', InputArgument::OPTIONAL, 'Argument description')
-            ->addOption('request', null, InputOption::VALUE_OPTIONAL, 'Option description')
-        ;
+            ->addOption('requests', null, InputOption::VALUE_OPTIONAL, 'Option description');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $io = new SymfonyStyle($input, $output);
-        $string_entrada = $input->getArgument('string_entrada');
-        $qtd_request = $input->getOption('request');
+        $hashGenerate = $input->getArgument('string_entrada');
+        $qtd_request = $input->getOption('requests');
 
-        for($i = 1; $i <= $qtd_request; $i++){
-//            $io->success($haseGenerate);
-//            return Command::SUCCESS;
+
+        for ($i = 1; $i <= $qtd_request; $i++)
+        {
             $hg = new HashGenerates();
-            $hashGenerate = $hg->setStringEntrada($string_entrada);
-            $io->writeln($hashGenerate);
-            return Command::SUCCESS;
-//            $aux = new HashGenerateController();
+            $string_entrada = $hg->setStringEntrada($hashGenerate);
+            $controller = new HashGeneratesController();
 
-//            $aux->encontra_zeros($hg, 1);
-//            $hashGenerate = $hg->getChaveEncontrada();
-
+            $controller->encontra_zeros($hg, $string_entrada, 1);
+            dd($hg);
+            return $io->writeln($hg->getChaveEncontrada());
+            $hashGenerate = $hg->getChaveEncontrada();
         }
         return Command::SUCCESS;
-//            $io->success($haseGenerate);
-//            return Command::SUCCESS;
 
 
     }
