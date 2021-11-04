@@ -34,15 +34,12 @@ class AvatoTesteCommand extends Command
         {
             $hg = new HashGenerates();
             $string_entrada = $hg->setStringEntrada($hashGenerate);
-            $controller = new HashGeneratesController();
 
+            $controller = new HashGeneratesController();
             $controller->encontra_zeros($hg, $string_entrada, 1);
-            dd($hg);
-            return $io->writeln($hg->getChaveEncontrada());
             $hashGenerate = $hg->getChaveEncontrada();
         }
         return Command::SUCCESS;
-
 
     }
 }

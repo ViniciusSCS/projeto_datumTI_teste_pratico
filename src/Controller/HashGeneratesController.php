@@ -62,6 +62,7 @@ class HashGeneratesController extends AbstractController
             $hg->setTentativas($count);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($hg);
+            dd($hg);
             $entityManager->flush();
         } else {
             $count++;
